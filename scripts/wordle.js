@@ -1,21 +1,29 @@
 "use strict";
 
 class Worldler {
+  // VARIAVEIS DE CUSTOMIZACAO DO JOGO INCLUINDO CORES,
+  //  CHANCES E TAMANHO DAS PALAVRAS. CRIADAS COMO PRIVATE MEMBERS
+  //  PARA DIFERENCIAR DAS VARIAVEIS DE LOGICA DO JOGO NO CONSTRUTOR.
   #MAX_GUESS = 4;
   #WORD_SIZE = 6;
   #COLOR_MAIN = "#5A45DA";
   #COLOR_ALT = "#DACB45";
   #COLOR_NEUTRAL = "#A6A6A6";
+
   constructor(array) {
-    this.wordArray = array;
+    // VARIAVEIS DE OPERACAO DA LOGICA DO JOGO
     this.guessesRemaining = this.#MAX_GUESS;
     this.currentGuess = [];
     this.nextLetter = 0;
+    // VARIAVEIS PARA DEFINIR A PALAVRA A SER ENCONTRADA
+    this.wordArray = array;
     this.rightGuessString =
       this.wordArray[Math.floor(Math.random() * array.length)];
   }
 
   init() {
+    // CRIAR TABULEIRO E TECLADO DO JOGO E EM SEGUIDA
+    //  DEFINIR SEUS EVENT LISTENERS RESPECTIVOS.
     this.initBoard();
     this.initVirtualKeyboard();
     this.initKeyboardEvents();
@@ -107,37 +115,49 @@ class Worldler {
   }
 
   checkGuess() {
+    // PEGAR A FILEIRA ATUAL COM BASE NOS NUMEROS DE TENTATIVAS RESTANTES
     let row = document.querySelectorAll(".letter--row");
     let currentRow = row[this.#MAX_GUESS - this.guessesRemaining];
-    let guessString = "";
+    // GERAR STRING COM CONTEUDO DA ARRAY DA TENTATIVA ATUAL
+    let guessString = this.currentGuess.reduce((str, el) => (str += el), "");
+    // GERAR ARRAY COM STRING DA RESPOSTA CERTA, PARA PODER SER COMPARADO COM O
+    //  ARRAY DA TENTATIVA ATUAL, E MODIFICADO PARA A LOGICA DE LETRAS REPITIDAS
     let rightGuess = Array.from(this.rightGuessString);
-
-    for (let val of this.currentGuess) {
-      guessString += val;
-    }
+    // CHECAR QUE HA LETRAS SUFICIENTES NA STRING DA TENTATIVA ATUAL
     if (guessString.length !== this.#WORD_SIZE) {
       alert("Letras insuficientes!");
       return;
     }
 
+    // LOGICA PARA DEFINIR ESTADO DE CADA LETRA, SEJA CORRETA NO MESMO LUGAR,
+    //  CORRETA MAS EM OUTRO LUGAR E INCORRETA. UTILIZANDO ESTE LOOP PARA
+    //  COLORIR A LETRA NO TABULEIRO E SUA CONTRAPARTE NO TECLADO VIRTUAL.
     for (let i = 0; i < this.#WORD_SIZE; i++) {
+      // VARIAVEL QUE VAI GUARDAR O RGB A SER ATRIBUIDO
       let letterColor = "";
+      // PEGAR A DO NOSSO ARRAY DA TENTATIVA E SUA CAIXA CORRESPONDENTE
       let box = currentRow.children[i];
       let letter = this.currentGuess[i];
-
+      // IDNETIFICAR SE A LETRA DA VEZ SE ENCONTRA NA PALAVRA ESCONDIDA
       let letterPosition = rightGuess.indexOf(this.currentGuess[i]);
+      // SE NAO FOR ENCONTRADA (-1), SERA COLORIDA COM COR NEUTRA
       if (letterPosition === -1) {
         letterColor = `${this.#COLOR_NEUTRAL}`;
       } else {
+        // CASO ENCONTRADA E NO MESMO INDICE, SERA COLORIDA COM COR MAIN
         if (this.currentGuess[i] === this.rightGuessString[i]) {
           letterColor = `${this.#COLOR_MAIN}`;
         } else {
+          // CASO ENCONTRADA MAS NAO NO MESMO INDICE, SERA COLORIDA COM COR ALT
           letterColor = `${this.#COLOR_ALT}`;
         }
-
+        // MARCAR O ARRAY DA RESPOSTA CERTA PARA QUE MULTIPLAS INSTANCIAS
+        //  DA MESMA LETRA SEJAM COLORIDAS.
         rightGuess[letterPosition] = "#";
       }
 
+      // CRIAR UMA CASCATA DE DELAYS PARA QUE AS ALTERACOES NAO ACONTECAM
+      //  INSTANTANEAMENTE.
       let delay = 250 * i;
       setTimeout(() => {
         box.style.backgroundColor = letterColor;
@@ -145,6 +165,7 @@ class Worldler {
       }, delay);
     }
 
+    // LOGICA PARA CHECAR SE A RESPOSTA ESTA CERTA
     if (guessString === this.rightGuessString) {
       alert("Resposta certa!");
       this.guessesRemaining = 0;
@@ -154,7 +175,7 @@ class Worldler {
       this.currentGuess = [];
       this.nextLetter = 0;
     }
-
+    // LOGICA PARA CHECAR SE O JOGO DEVE ACABAR
     if (this.guessesRemaining === 0) {
       alert("Voce usou todas as tentativas!");
       alert(`A palavra certa era: "${rightGuessString}"`);
@@ -252,3 +273,7 @@ class Worldler {
 const arr = ["arrays", "ferals", "brites", "broths"];
 const game = new Worldler(arr);
 game.init();
+
+let arr2 = ["h", "e", "l", "l", "s"];
+let str = arr2.reduce((str, el) => (str += el), "");
+console.log(str);
