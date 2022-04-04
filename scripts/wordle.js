@@ -8,7 +8,7 @@ class Worldler {
   #WORD_SIZE = 6;
   #COLOR_MAIN = "#5A45DA";
   #COLOR_ALT = "#DACB45";
-  #COLOR_NEUTRAL = "#A6A6A6";
+  #COLOR_NEUTRAL = "#4A4A4A";
 
   constructor(array) {
     // VARIAVEIS DE OPERACAO DA LOGICA DO JOGO
