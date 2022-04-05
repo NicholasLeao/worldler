@@ -7,7 +7,7 @@ class Worldler {
   #MAX_GUESS = 4;
   #WORD_SIZE = 6;
   #COLOR_MAIN = "#5A45DA";
-  #COLOR_ALT = "#DACB45";
+  #COLOR_ALT = "#e38944";
   #COLOR_NEUTRAL = "#4A4A4A";
 
   constructor(array) {
@@ -28,8 +28,19 @@ class Worldler {
     this.initVirtualKeyboard();
     this.initKeyboardEvents();
     this.initVirtualKeyboardEvents();
+    this.checkWordsArray();
   }
 
+  checkWordsArray() {
+    // CERTIFICAR QUE TODAS AS PALAVRAS DO ARRAY DE PALAVRAS
+    //  TEM A MESMA LENGTH
+    const bool =
+      this.wordArray.length ===
+      this.wordArray.filter((e) => e.length === this.#WORD_SIZE).length;
+    if (!bool) {
+      alert("Invalid word array!");
+    }
+  }
   initBoard() {
     // GET CONTAINER DO JOGO
     let container = document.querySelector(".game--container");
@@ -156,8 +167,8 @@ class Worldler {
         rightGuess[letterPosition] = "#";
       }
 
-      // CRIAR UMA CASCATA DE DELAYS PARA QUE AS ALTERACOES NAO ACONTECAM
-      //  INSTANTANEAMENTE.
+      // CRIAR UMA CASCATA DE DELAYS DE FORMA ASSINCRONA
+      //  PARA QUE AS ALTERACOES NAO ACONTECAM INSTANTANEAMENTE.
       let delay = 250 * i;
       setTimeout(() => {
         box.style.backgroundColor = letterColor;
@@ -274,6 +285,3 @@ const arr = ["arrays", "ferals", "brites", "broths"];
 const game = new Worldler(arr);
 game.init();
 
-let arr2 = ["h", "e", "l", "l", "s"];
-let str = arr2.reduce((str, el) => (str += el), "");
-console.log(str);

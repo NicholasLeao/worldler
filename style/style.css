@@ -1,13 +1,21 @@
 :root {
-  --gray: #E1E1E1;
+  --gray: #e1e1e1;
   --black: #121212;
+  --main: #5a45da;
 }
-*{
+* {
   margin: 0;
   font-family: Jetbrains Mono;
 }
-h1 {
-  text-align: center;
+header {
+  display: flex;
+  flex: row;
+  align-items: center;
+  justify-content: center;
+  font-size: 52px;
+  padding: 0;
+  margin-bottom: 25px;
+  width: 100%;
 }
 body {
   color: var(--gray);
@@ -18,19 +26,32 @@ body {
   height: 85vh;
   background-color: var(--black);
 }
-#game-board {
+/* #game-board {
   border: 2px solid var(--gray);
   border-radius: 7px;
   display: flex;
   align-items: center;
   flex-direction: column;
+} */
+.game {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-evenly;
+  align-items: center;
 }
-
+.map--container {
+  border: 2px solid var(--gray);
+  border-radius: 7px;
+  height: 100%;
+  width: 750px;
+  margin-right: 25px;
+  padding: 15px;
+}
 .wordle--container {
   border: 2px solid var(--gray);
   border-radius: 7px;
   width: 420px;
-  height: 500px;
+  height: 100%;
   padding: 15px;
   display: flex;
   flex-direction: column;
@@ -50,10 +71,6 @@ body {
   justify-content: center;
   align-items: center;
   text-transform: uppercase;
-}
-
-.filled-box {
-  border: 2px solid black;
 }
 
 .letter--row {
@@ -88,12 +105,11 @@ body {
   cursor: pointer;
   text-transform: uppercase;
   min-width: 3rem;
-  transition-delay:0.3s;
+  transition-delay: 0.3s;
   transition: 0.3s;
 }
 .kbd--btn:hover {
-  
   transition: 0.3s;
-  transition-delay:0.1s;
+  transition-delay: 0.1s;
   padding: 0.5rem 2rem;
 }
