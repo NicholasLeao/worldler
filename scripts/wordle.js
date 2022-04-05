@@ -19,6 +19,7 @@ class Worldler {
     this.wordArray = array;
     this.rightGuessString =
       this.wordArray[Math.floor(Math.random() * array.length)].toLowerCase();
+    this.wordLocation = this.getLocation();
   }
 
   init() {
@@ -279,19 +280,59 @@ class Worldler {
   }
 
   generateStaticEmbed() {
+    // FUNCAO ALTERNATIVA A STREETVIEW QUE GERA UMA FOTO BASEADA EM UMA
+    // SEARCH PELA PALAVRA SECRETA.
     const imgDiv = document.querySelector(".map--container");
     const img = document.createElement("img");
-    // const location = "41.403609,2.17444";
     const location = this.rightGuessString;
-
     const size = `${imgDiv.offsetWidth}x${imgDiv.offsetHeight}`;
     img.src = `https://maps.googleapis.com/maps/api/streetview?location=${location}8&size=${size}&key=AIzaSyCEX0HMqKwrrLQxvZFIUiAD3VFF1ksM8NA`;
     imgDiv.appendChild(img);
   }
 
+  getLocation() {
+    let location;
+    const request = new XMLHttpRequest();
+    console.log(this.rightGuessString);
+    request.open(
+      "GET",
+      `https://maps.googleapis.com/maps/api/geocode/json?address=${this.rightGuessString}&key=AIzaSyCEX0HMqKwrrLQxvZFIUiAD3VFF1ksM8NA`
+    );
+    request.send();
+    request.addEventListener("load", function () {
+      const [data] = JSON.parse(this.responseText).results;
+      location = data.geometry.location;
+      console.log("locaiton:", location)
+    });
+    console.log("locaiton:", location)
+    return location;
+  }
+  static createMap() {
+    // PARA FAZER ESTA FUNCAO FUNCIONAR DENTRO DA CALLBACK DO MEU SCRIPT NO HTML
+    //  PRECISEI CRIAR UMA VARIAVEL NO ESCOPO GLOBAL QUE FAZ REFERENCIA A ESSA FUNCAO
+    console.log(this);
+    // CRIAR JSON DE OPCOES PARA O MAPS
+    let options = {
+      // position: obj[game.rightGuessString],
+      position: this.wordLocation,
+      preference: "best",
+      disableDefaultUI: true,
+      radius: 1000,
+      streetViewControl: false,
+      linksControl: false,
+      panControl: false,
+      enableCloseButton: false,
+      showRoadLabels: false,
+    };
+    // CRIAR NOVA INSTANCIA DO MAPS
+    new google.maps.StreetViewPanorama(
+      document.querySelector(".map--container"),
+      options
+    );
+  }
+
   //////////////// FIM DA CLASSE WORLDLER ////////////////
 }
-
 const arr = ["athens", "auburn", "dothan", "jasper"];
 const obj = {
   athens: { lat: 33.934796, lng: -83.365099 },
@@ -299,24 +340,7 @@ const obj = {
   dothan: { lat: 31.22449, lng: -85.397499 },
   jasper: { lat: 33.84443, lng: -87.247233 },
 };
-const game = new Worldler(arr);
-game.init();
-// game.generateStaticEmbed();
 
-function createMap() {
-  let options = {
-    position: obj[game.rightGuessString],
-    preference: "best",
-    disableDefaultUI: true,
-    radius: 1000,
-    streetViewControl: false,
-    linksControl: false,
-    panControl: false,
-    enableCloseButton: false,
-    showRoadLabels: false,
-  };
-  new google.maps.StreetViewPanorama(
-    document.querySelector(".map--container"),
-    options
-  );
-}
+const game = new Worldler(arr);
+var createMap = Worldler.createMap.bind(game);
+game.init();
