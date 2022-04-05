@@ -24,6 +24,7 @@ class Worldler {
   init() {
     // CRIAR TABULEIRO E TECLADO DO JOGO E EM SEGUIDA
     //  DEFINIR SEUS EVENT LISTENERS RESPECTIVOS.
+    this.createMap();
     this.initBoard();
     this.initVirtualKeyboard();
     this.initKeyboardEvents();
@@ -289,7 +290,7 @@ class Worldler {
     imgDiv.appendChild(img);
   }
 
-  static createMap() {
+  createMap() {
     // CALLBACK QUE SERA CHAMADA PELO SCRIPT DO GOOGLE MAPS NO HTML
 
     // CRIAR REQUEST
@@ -340,5 +341,6 @@ const arr = [
 ];
 
 const game = new Worldler(arr);
-var createMap = Worldler.createMap.bind(game);
 game.init();
+
+// TODO: array agnostico 5 ou 6 letras / usar best parametro para pegar melhores panoramas /
