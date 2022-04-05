@@ -18,7 +18,7 @@ class Worldler {
     // VARIAVEIS PARA DEFINIR A PALAVRA A SER ENCONTRADA
     this.wordArray = array;
     this.rightGuessString =
-      this.wordArray[Math.floor(Math.random() * array.length)];
+      this.wordArray[Math.floor(Math.random() * array.length)].toLowerCase();
   }
 
   init() {
@@ -278,10 +278,21 @@ class Worldler {
     });
   }
 
+  generateStaticEmbed() {
+    const imgDiv = document.querySelector(".map--container");
+    const img = document.createElement("img");
+    // const location = "41.403609,2.17444";
+    const location = this.rightGuessString;
+
+    const size = `${imgDiv.offsetWidth}x${imgDiv.offsetHeight}`;
+    img.src = `https://maps.googleapis.com/maps/api/streetview?location=${location}8&size=${size}&key=AIzaSyCEX0HMqKwrrLQxvZFIUiAD3VFF1ksM8NA`;
+    imgDiv.appendChild(img);
+  }
+
   //////////////// FIM DA CLASSE WORLDLER ////////////////
 }
 
-const arr = ["arrays", "ferals", "brites", "broths"];
+const arr = ["athens", "auburn", "dothan", "jasper"];
 const game = new Worldler(arr);
 game.init();
-
+game.generateStaticEmbed();
