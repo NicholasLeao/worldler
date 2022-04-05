@@ -293,6 +293,30 @@ class Worldler {
 }
 
 const arr = ["athens", "auburn", "dothan", "jasper"];
+const obj = {
+  athens: { lat: 33.934796, lng: -83.365099 },
+  auburn: { lat: 34.012948, lng: -83.827611 },
+  dothan: { lat: 31.22449, lng: -85.397499 },
+  jasper: { lat: 33.84443, lng: -87.247233 },
+};
 const game = new Worldler(arr);
 game.init();
-game.generateStaticEmbed();
+// game.generateStaticEmbed();
+
+function createMap() {
+  let options = {
+    position: obj[game.rightGuessString],
+    preference: "best",
+    disableDefaultUI: true,
+    radius: 1000,
+    streetViewControl: false,
+    linksControl: false,
+    panControl: false,
+    enableCloseButton: false,
+    showRoadLabels: false,
+  };
+  new google.maps.StreetViewPanorama(
+    document.querySelector(".map--container"),
+    options
+  );
+}

@@ -52,6 +52,7 @@ body {
 }
 .map--container img {
   border-radius: 7px;
+
 }
 .wordle--container {
   border: 2px solid var(--gray);
@@ -63,6 +64,7 @@ body {
   flex-direction: column;
   align-items: center;
   justify-content: space-evenly;
+  z-index: +10;
 }
 .box {
   box-shadow: 3px 3px var(--gray);
