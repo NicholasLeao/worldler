@@ -18,7 +18,7 @@ class Worldler {
       this.wordArray[Math.floor(Math.random() * array.length)].toLowerCase();
     // DEFINIR DIFICULDADE PARA ARRAY AGNOSTICO AO NUMERO DE LETRAS
     this.#WORD_SIZE = this.rightGuessString.length;
-    this.#MAX_GUESS = this.#WORD_SIZE - 2;
+    this.#MAX_GUESS = this.#WORD_SIZE - 2 > 4 ? 4 : this.#WORD_SIZE - 2;
     // VARIAVEIS DE OPERACAO DA LOGICA DO JOGO
     this.guessesRemaining = this.#MAX_GUESS;
     this.currentGuess = [];
