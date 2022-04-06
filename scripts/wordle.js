@@ -377,8 +377,6 @@ class Worldler {
         document.querySelector(".map--container"),
         options
       );
-
-      console.log(pano);
     });
   }
 
@@ -453,11 +451,10 @@ const arr = [
   "algiers",
   "chicago",
   "brisbane",
-  "beirut"
+  "beirut",
 ];
 
 const game = new Worldler(arr);
 game.init();
-game.alertDOM("Testing warning message")
 
 // TODO: array agnostico 5 ou 6 letras / usar best parametro para pegar melhores panoramas / REFRESCAR PAGINA QNDO NAO HOUVER PROPRIEDADE GEOMETRY
