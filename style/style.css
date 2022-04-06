@@ -19,19 +19,32 @@ h1 {
   font-size: 60px;
 }
 body {
+  margin: 0;
+  /* border: 2px solid red; */
   color: var(--gray);
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: space-evenly;
-  height: 85vh;
+  height: 100vh;
   background-color: var(--black);
 }
+.body--container {
+  display: flex;
+  flex-direction: column;
+  /* border: 5px solid blue; */
+  height: auto;
+}
 .game {
+  /* border: 2px solid orange; */
   display: flex;
   flex-direction: row;
   justify-content: space-evenly;
   align-items: center;
+
+  padding-top: 25px;
+  padding-bottom: 25px;
+  height: 100%;
 }
 .map--container {
   display: flex;
@@ -113,6 +126,21 @@ body {
   transition: 0.3s;
   transition-delay: 0.1s;
   padding: 0.5rem 2rem;
+}
+.footer--icon{
+  margin: 0;
+  height: 40px;
+}
+.game--footer {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-end;
+  justify-content: space-between;
+
+  /* border: 2px solid green; */
+  width: 100%;
+  font-size: 26px;
+  margin-top: 10px;
 }
 
 /* @media screen and (max-width: 1200px) {

@@ -1,4 +1,5 @@
 "use strict";
+// import { CIDADES } from "./cities";
 
 class Worldler {
   // VARIAVEIS DE CUSTOMIZACAO DO JOGO INCLUINDO CORES,
@@ -418,6 +419,41 @@ const arr = [
   "kolkata",
   "manila",
   "tianjin",
+  "mexico",
+  "mumbai",
+  "lahore",
+  "chennai",
+  "bogota",
+  "jakarta",
+  "lima",
+  "bangkok",
+  "nagoya",
+  "london",
+  "tehran",
+  "luanda",
+  "santiago",
+  "toronto",
+  "ankara",
+  "nairobi",
+  "sydney",
+  "brasilia",
+  "rome",
+  "kano",
+  "salvador",
+  "curitiba",
+  "berlin",
+  "krakow",
+  "busan",
+  "asuncion",
+  "campinas",
+  "kuwait",
+  "athens",
+  "lisbon",
+  "caracas",
+  "algiers",
+  "chicago",
+  "brisbane",
+  "beirut"
 ];
 
 const game = new Worldler(arr);
