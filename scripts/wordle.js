@@ -4,33 +4,34 @@ class Worldler {
   // VARIAVEIS DE CUSTOMIZACAO DO JOGO INCLUINDO CORES,
   //  CHANCES E TAMANHO DAS PALAVRAS. CRIADAS COMO PRIVATE MEMBERS
   //  PARA DIFERENCIAR DAS VARIAVEIS DE LOGICA DO JOGO NO CONSTRUTOR.
-  #MAX_GUESS = 3;
-  #WORD_SIZE = 5;
+  #MAX_GUESS = 0;
+  #WORD_SIZE = 0;
   #COLOR_MAIN = "#5A45DA";
   #COLOR_ALT = "#e38944";
   #COLOR_NEUTRAL = "#4A4A4A";
 
   constructor(array) {
-    // VARIAVEIS DE OPERACAO DA LOGICA DO JOGO
-    this.guessesRemaining = this.#MAX_GUESS;
-    this.currentGuess = [];
-    this.nextLetter = 0;
     // VARIAVEIS PARA DEFINIR A PALAVRA A SER ENCONTRADA
     this.wordArray = array;
     this.rightGuessString =
       this.wordArray[Math.floor(Math.random() * array.length)].toLowerCase();
+    // DEFINIR DIFICULDADE PARA ARRAY AGNOSTICO AO NUMERO DE LETRAS
+    this.#WORD_SIZE = this.rightGuessString.length;
+    this.#MAX_GUESS = this.#WORD_SIZE - 2;
+    // VARIAVEIS DE OPERACAO DA LOGICA DO JOGO
+    this.guessesRemaining = this.#MAX_GUESS;
+    this.currentGuess = [];
+    this.nextLetter = 0;
   }
 
   init() {
     // CRIAR TABULEIRO E TECLADO DO JOGO E EM SEGUIDA
     //  DEFINIR SEUS EVENT LISTENERS RESPECTIVOS.
     this.createMap();
-    // this.createAdaptiveMap();
     this.initBoard();
     this.initVirtualKeyboard();
     this.initKeyboardEvents();
     this.initVirtualKeyboardEvents();
-    this.checkWordsArray();
   }
 
   checkWordsArray() {
@@ -40,9 +41,10 @@ class Worldler {
       this.wordArray.length ===
       this.wordArray.filter((e) => e.length === this.#WORD_SIZE).length;
     if (!bool) {
-      alert("Invalid word array!");
+      this.alertDOM("Invalid word array!");
     }
   }
+
   initBoard() {
     // GET CONTAINER DO JOGO
     let container = document.querySelector(".game--container");
@@ -138,7 +140,7 @@ class Worldler {
     let rightGuess = Array.from(this.rightGuessString);
     // CHECAR QUE HA LETRAS SUFICIENTES NA STRING DA TENTATIVA ATUAL
     if (guessString.length !== this.#WORD_SIZE) {
-      alert("Letras insuficientes!");
+      this.alertDOM("Letras insuficientes!");
       return;
     }
 
@@ -180,7 +182,7 @@ class Worldler {
 
     // LOGICA PARA CHECAR SE A RESPOSTA ESTA CERTA
     if (guessString === this.rightGuessString) {
-      alert("Resposta certa!");
+      this.alertDOM("Resposta certa!");
       this.guessesRemaining = 0;
       return;
     } else {
@@ -190,8 +192,7 @@ class Worldler {
     }
     // LOGICA PARA CHECAR SE O JOGO DEVE ACABAR
     if (this.guessesRemaining === 0) {
-      alert("Voce usou todas as tentativas!");
-      alert(`A palavra certa era: "${rightGuessString}"`);
+      this.alertDOM(`A palavra certa era: "${this.rightGuessString}"`);
     }
   }
 
@@ -201,15 +202,11 @@ class Worldler {
     // APLICAR FUNCAO ANONIMA EM ELEMENTOS DA NODE LIST
     keys.forEach((key) => {
       // ACHAR LETRA DA NODE LIST QUE CORRESPONDE AO ARG
-      console.log("trigger-1");
       if (key.textContent.toLowerCase() === letter) {
-        console.log("trigger0");
         // GUARDAR COR ATUAL DA LETRA
         let memCol = key.style.backgroundColor;
         // CHECAR SE A COR JA E A COR MAIN
         if (memCol === `${this.#COLOR_MAIN}`) {
-          console.log("trigger1");
-
           return;
         }
         // CHECAR SE A LETRA JA E DA COR ALT E O ARG
@@ -219,15 +216,10 @@ class Worldler {
           memCol === `${this.#COLOR_ALT}` &&
           color !== `${this.#COLOR_MAIN}`
         ) {
-          console.log("trigger2");
           return;
         }
         // SE NENHUMA GUARD CLAUSE ENGATILHAR, APLICAR NOVA COR
         key.style.backgroundColor = color;
-
-        console.log(key);
-        console.log(key.style.backgroundColor);
-        console.log(color);
       }
     });
   }
@@ -302,8 +294,6 @@ class Worldler {
         var latitude = results[0].geometry.location.lat();
         var longitude = results[0].geometry.location.lng();
 
-        console.log(latitude + " " + longitude);
-
         var svService = new google.maps.StreetViewService();
         var panoRequest = {
           location: results[0].geometry.location,
@@ -325,7 +315,7 @@ class Worldler {
             } else {
               //Handle other statuses here
               if (radius > 200) {
-                alert("Street View is not available");
+                this.alertDOM("Street View is not available");
               } else {
                 findPanorama(radius + 5);
               }
@@ -336,6 +326,15 @@ class Worldler {
         findPanorama(50);
       }
     });
+  }
+
+  alertDOM(string) {
+    const h1 = document.getElementById("title");
+    const h1Content = h1.textContent;
+    h1.textContent = string;
+    setTimeout(() => {
+      h1.textContent = h1Content;
+    }, 5000);
   }
 
   createMap() {
@@ -359,7 +358,6 @@ class Worldler {
         ((Math.random() * 5) / 1000) * (Math.random() < 0.5 ? -1 : 1);
       location.lng +=
         ((Math.random() * 5) / 1000) * (Math.random() < 0.5 ? -1 : 1);
-      console.log(data);
       // CRIAR OBJ DE OPCOES
       let options = {
         position: location,
@@ -378,6 +376,7 @@ class Worldler {
         document.querySelector(".map--container"),
         options
       );
+
       console.log(pano);
     });
   }
@@ -409,9 +408,20 @@ const arr = [
   "eeklo",
   "kabul",
   "texas",
+  "moscow",
+  "dhaka",
+  "cairo",
+  "beijing",
+  "mumbai",
+  "karachi",
+  "istanbul",
+  "kolkata",
+  "manila",
+  "tianjin",
 ];
 
 const game = new Worldler(arr);
 game.init();
+game.alertDOM("Testing warning message")
 
 // TODO: array agnostico 5 ou 6 letras / usar best parametro para pegar melhores panoramas / REFRESCAR PAGINA QNDO NAO HOUVER PROPRIEDADE GEOMETRY

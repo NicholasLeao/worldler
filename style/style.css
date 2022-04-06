@@ -12,10 +12,11 @@ header {
   flex: row;
   align-items: center;
   justify-content: center;
-  font-size: 52px;
-  padding: 0;
   margin-bottom: 25px;
   width: 100%;
+}
+h1 {
+  font-size: 60px;
 }
 body {
   color: var(--gray);
@@ -26,13 +27,6 @@ body {
   height: 85vh;
   background-color: var(--black);
 }
-/* #game-board {
-  border: 2px solid var(--gray);
-  border-radius: 7px;
-  display: flex;
-  align-items: center;
-  flex-direction: column;
-} */
 .game {
   display: flex;
   flex-direction: row;
@@ -52,7 +46,6 @@ body {
 }
 .map--container img {
   border-radius: 7px;
-
 }
 .wordle--container {
   border: 2px solid var(--gray);
@@ -67,6 +60,7 @@ body {
   z-index: +10;
 }
 .box {
+  background-color: var(--black);
   box-shadow: 3px 3px var(--gray);
   border: 2px solid var(--gray);
   border-radius: 6px;
@@ -83,7 +77,6 @@ body {
 
 .letter--row {
   display: flex;
-  /* flex-direction: row; */
 }
 
 .kbd--container {
@@ -121,3 +114,20 @@ body {
   transition-delay: 0.1s;
   padding: 0.5rem 2rem;
 }
+
+/* @media screen and (max-width: 1200px) {
+  .game {
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-evenly;
+    width: 85vw;
+    height: 70vh;
+    margin: 150px;
+    padding: 50px;
+  }
+  .map--container {
+    height: 40vh;
+    width: 420px;
+    margin-bottom: 25px;
+  }
+} */
