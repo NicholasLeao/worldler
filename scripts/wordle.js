@@ -4,8 +4,8 @@ class Worldler {
   // VARIAVEIS DE CUSTOMIZACAO DO JOGO INCLUINDO CORES,
   //  CHANCES E TAMANHO DAS PALAVRAS. CRIADAS COMO PRIVATE MEMBERS
   //  PARA DIFERENCIAR DAS VARIAVEIS DE LOGICA DO JOGO NO CONSTRUTOR.
-  #MAX_GUESS = 4;
-  #WORD_SIZE = 6;
+  #MAX_GUESS = 3;
+  #WORD_SIZE = 5;
   #COLOR_MAIN = "#5A45DA";
   #COLOR_ALT = "#e38944";
   #COLOR_NEUTRAL = "#4A4A4A";
@@ -25,6 +25,7 @@ class Worldler {
     // CRIAR TABULEIRO E TECLADO DO JOGO E EM SEGUIDA
     //  DEFINIR SEUS EVENT LISTENERS RESPECTIVOS.
     this.createMap();
+    // this.createAdaptiveMap();
     this.initBoard();
     this.initVirtualKeyboard();
     this.initKeyboardEvents();
@@ -290,6 +291,53 @@ class Worldler {
     imgDiv.appendChild(img);
   }
 
+  createAdaptiveMap() {
+    var geocoder = new google.maps.Geocoder();
+    var address = "2 Simei Street 3, Singapore, Singapore 529889";
+    //var address = "1 Hacienda Grove, Singapore 457908";
+    //var address = "105 Simei Street 1, Singapore 520105";
+
+    geocoder.geocode({ address: address }, function (results, status) {
+      if (status == google.maps.GeocoderStatus.OK) {
+        var latitude = results[0].geometry.location.lat();
+        var longitude = results[0].geometry.location.lng();
+
+        console.log(latitude + " " + longitude);
+
+        var svService = new google.maps.StreetViewService();
+        var panoRequest = {
+          location: results[0].geometry.location,
+          preference: google.maps.StreetViewPreference.NEAREST,
+          radius: 50,
+          source: google.maps.StreetViewSource.OUTDOOR,
+        };
+
+        var findPanorama = function (radius) {
+          panoRequest.radius = radius;
+          svService.getPanorama(panoRequest, function (panoData, status) {
+            if (status === google.maps.StreetViewStatus.OK) {
+              var panorama = new google.maps.StreetViewPanorama(
+                document.getElementById(".map--container"),
+                {
+                  pano: panoData.location.pano,
+                }
+              );
+            } else {
+              //Handle other statuses here
+              if (radius > 200) {
+                alert("Street View is not available");
+              } else {
+                findPanorama(radius + 5);
+              }
+            }
+          });
+        };
+
+        findPanorama(50);
+      }
+    });
+  }
+
   createMap() {
     // CALLBACK QUE SERA CHAMADA PELO SCRIPT DO GOOGLE MAPS NO HTML
 
@@ -297,7 +345,7 @@ class Worldler {
     const request = new XMLHttpRequest();
     request.open(
       "GET",
-      `https://maps.googleapis.com/maps/api/geocode/json?address=${this.rightGuessString}&key=AIzaSyCEX0HMqKwrrLQxvZFIUiAD3VFF1ksM8NA`
+      `https://maps.googleapis.com/maps/api/geocode/json?address=city+center+${this.rightGuessString}&key=AIzaSyCEX0HMqKwrrLQxvZFIUiAD3VFF1ksM8NA`
     );
     request.send();
 
@@ -306,11 +354,19 @@ class Worldler {
       // PARSE DA JSON PARA SER USADA DENTRO DO OBJ OPTIONS
       const [data] = JSON.parse(this.responseText).results;
       let location = data.geometry.location;
+      // LOGICA DE DIVERSIFICACAO DO PANORAMA
+      location.lat +=
+        ((Math.random() * 5) / 1000) * (Math.random() < 0.5 ? -1 : 1);
+      location.lng +=
+        ((Math.random() * 5) / 1000) * (Math.random() < 0.5 ? -1 : 1);
+      console.log(data);
+      // CRIAR OBJ DE OPCOES
       let options = {
         position: location,
-        preference: "best",
+        preference: google.maps.StreetViewPreference.BEST,
+        radius: 5000,
+        source: google.maps.StreetViewSource.OUTDOOR,
         disableDefaultUI: true,
-        radius: 1000,
         streetViewControl: false,
         linksControl: false,
         panControl: false,
@@ -318,29 +374,44 @@ class Worldler {
         showRoadLabels: false,
       };
       // CRIACAO DO PANORAMA DO STREET VIEW
-      new google.maps.StreetViewPanorama(
+      let pano = new google.maps.StreetViewPanorama(
         document.querySelector(".map--container"),
         options
       );
+      console.log(pano);
     });
   }
 
   //////////////// FIM DA CLASSE WORLDLER ////////////////
 }
 const arr = [
-  "mumbai",
-  "manila",
-  "moscow",
-  "bogota",
-  "london",
-  "tehran",
-  "luanda",
-  "madrid",
-  "dallas",
-  "dalian",
+  "tokyo",
+  "hanoi",
+  "paris",
+  "kyoto",
+  "sofia",
+  "lagos",
+  "milan",
+  "perth",
+  "seoul",
+  "miami",
+  "osaka",
+  "medan",
+  "delhi",
+  "dubai",
+  "hague",
+  "macau",
+  "minsk",
+  "cairo",
+  "tunis",
+  "dakar",
+  "accra",
+  "eeklo",
+  "kabul",
+  "texas",
 ];
 
 const game = new Worldler(arr);
 game.init();
 
-// TODO: array agnostico 5 ou 6 letras / usar best parametro para pegar melhores panoramas /
+// TODO: array agnostico 5 ou 6 letras / usar best parametro para pegar melhores panoramas / REFRESCAR PAGINA QNDO NAO HOUVER PROPRIEDADE GEOMETRY
