@@ -5,13 +5,42 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="stylesheet" href="./style/style.css" />
+
+    <!-- JET BRAINS MONO -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800&display=swap"
+      rel="stylesheet"
+    />
+    <!--  -->
     <title>Document</title>
   </head>
   <body>
-    <div class="wordle--container">
-      <div class="game--container"></div>
-      <div class="kbd--container"></div>
+    <div class="body--container">
+      <header><h1 id="title">Worldler</h1></header>
+      <section class="game">
+        <div class="map--container"></div>
+        <div class="wordle--container">
+          <div class="game--container"></div>
+          <div class="kbd--container"></div>
+        </div>
+      </section>
+      <div class="game--footer">
+        <span>A JavaScript game made by Nicholas Leão</span>
+        <div>
+          <img class="footer--icon" src="./assets/github.svg" />
+          <img class="footer--icon" src="./assets/linkedin.svg" />
+        </div>
+      </div>
     </div>
+    <!--  -->
+    <!--  -->
     <script src="./scripts/wordle.js"></script>
+    <script
+      src="https://maps.googleapis.com/maps/api/js?key=AIzaSyA4gU2QESrbeNaGTFFtrD2wJXtfOTpI6rE"
+      async
+      defer
+    ></script>
   </body>
 </html>

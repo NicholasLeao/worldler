@@ -1,25 +1,49 @@
 "use strict";
+// import { CIDADES } from "./cities";
 
 class Worldler {
-  #MAX_GUESS = 4;
-  #WORD_SIZE = 6;
+  // VARIAVEIS DE CUSTOMIZACAO DO JOGO INCLUINDO CORES,
+  //  CHANCES E TAMANHO DAS PALAVRAS. CRIADAS COMO PRIVATE MEMBERS
+  //  PARA DIFERENCIAR DAS VARIAVEIS DE LOGICA DO JOGO NO CONSTRUTOR.
+  #MAX_GUESS = 0;
+  #WORD_SIZE = 0;
   #COLOR_MAIN = "#5A45DA";
-  #COLOR_ALT = "#DACB45";
-  #COLOR_NEUTRAL = "#A6A6A6";
+  #COLOR_ALT = "#e38944";
+  #COLOR_NEUTRAL = "#4A4A4A";
+
   constructor(array) {
+    // VARIAVEIS PARA DEFINIR A PALAVRA A SER ENCONTRADA
     this.wordArray = array;
+    this.rightGuessString =
+      this.wordArray[Math.floor(Math.random() * array.length)].toLowerCase();
+    // DEFINIR DIFICULDADE PARA ARRAY AGNOSTICO AO NUMERO DE LETRAS
+    this.#WORD_SIZE = this.rightGuessString.length;
+    this.#MAX_GUESS = this.#WORD_SIZE - 2;
+    // VARIAVEIS DE OPERACAO DA LOGICA DO JOGO
     this.guessesRemaining = this.#MAX_GUESS;
     this.currentGuess = [];
     this.nextLetter = 0;
-    this.rightGuessString =
-      this.wordArray[Math.floor(Math.random() * array.length)];
   }
 
   init() {
+    // CRIAR TABULEIRO E TECLADO DO JOGO E EM SEGUIDA
+    //  DEFINIR SEUS EVENT LISTENERS RESPECTIVOS.
+    this.createMap();
     this.initBoard();
     this.initVirtualKeyboard();
     this.initKeyboardEvents();
     this.initVirtualKeyboardEvents();
+  }
+
+  checkWordsArray() {
+    // CERTIFICAR QUE TODAS AS PALAVRAS DO ARRAY DE PALAVRAS
+    //  TEM A MESMA LENGTH
+    const bool =
+      this.wordArray.length ===
+      this.wordArray.filter((e) => e.length === this.#WORD_SIZE).length;
+    if (!bool) {
+      this.alertDOM("Invalid word array!");
+    }
   }
 
   initBoard() {
@@ -107,37 +131,49 @@ class Worldler {
   }
 
   checkGuess() {
+    // PEGAR A FILEIRA ATUAL COM BASE NOS NUMEROS DE TENTATIVAS RESTANTES
     let row = document.querySelectorAll(".letter--row");
     let currentRow = row[this.#MAX_GUESS - this.guessesRemaining];
-    let guessString = "";
+    // GERAR STRING COM CONTEUDO DA ARRAY DA TENTATIVA ATUAL
+    let guessString = this.currentGuess.reduce((str, el) => (str += el), "");
+    // GERAR ARRAY COM STRING DA RESPOSTA CERTA, PARA PODER SER COMPARADO COM O
+    //  ARRAY DA TENTATIVA ATUAL, E MODIFICADO PARA A LOGICA DE LETRAS REPITIDAS
     let rightGuess = Array.from(this.rightGuessString);
-
-    for (let val of this.currentGuess) {
-      guessString += val;
-    }
+    // CHECAR QUE HA LETRAS SUFICIENTES NA STRING DA TENTATIVA ATUAL
     if (guessString.length !== this.#WORD_SIZE) {
-      alert("Letras insuficientes!");
+      this.alertDOM("Letras insuficientes!");
       return;
     }
 
+    // LOGICA PARA DEFINIR ESTADO DE CADA LETRA, SEJA CORRETA NO MESMO LUGAR,
+    //  CORRETA MAS EM OUTRO LUGAR E INCORRETA. UTILIZANDO ESTE LOOP PARA
+    //  COLORIR A LETRA NO TABULEIRO E SUA CONTRAPARTE NO TECLADO VIRTUAL.
     for (let i = 0; i < this.#WORD_SIZE; i++) {
+      // VARIAVEL QUE VAI GUARDAR O RGB A SER ATRIBUIDO
       let letterColor = "";
+      // PEGAR A DO NOSSO ARRAY DA TENTATIVA E SUA CAIXA CORRESPONDENTE
       let box = currentRow.children[i];
       let letter = this.currentGuess[i];
-
+      // IDNETIFICAR SE A LETRA DA VEZ SE ENCONTRA NA PALAVRA ESCONDIDA
       let letterPosition = rightGuess.indexOf(this.currentGuess[i]);
+      // SE NAO FOR ENCONTRADA (-1), SERA COLORIDA COM COR NEUTRA
       if (letterPosition === -1) {
         letterColor = `${this.#COLOR_NEUTRAL}`;
       } else {
+        // CASO ENCONTRADA E NO MESMO INDICE, SERA COLORIDA COM COR MAIN
         if (this.currentGuess[i] === this.rightGuessString[i]) {
           letterColor = `${this.#COLOR_MAIN}`;
         } else {
+          // CASO ENCONTRADA MAS NAO NO MESMO INDICE, SERA COLORIDA COM COR ALT
           letterColor = `${this.#COLOR_ALT}`;
         }
-
+        // MARCAR O ARRAY DA RESPOSTA CERTA PARA QUE MULTIPLAS INSTANCIAS
+        //  DA MESMA LETRA SEJAM COLORIDAS.
         rightGuess[letterPosition] = "#";
       }
 
+      // CRIAR UMA CASCATA DE DELAYS DE FORMA ASSINCRONA
+      //  PARA QUE AS ALTERACOES NAO ACONTECAM INSTANTANEAMENTE.
       let delay = 250 * i;
       setTimeout(() => {
         box.style.backgroundColor = letterColor;
@@ -145,8 +181,9 @@ class Worldler {
       }, delay);
     }
 
+    // LOGICA PARA CHECAR SE A RESPOSTA ESTA CERTA
     if (guessString === this.rightGuessString) {
-      alert("Resposta certa!");
+      this.alertDOM("Resposta certa!");
       this.guessesRemaining = 0;
       return;
     } else {
@@ -154,10 +191,9 @@ class Worldler {
       this.currentGuess = [];
       this.nextLetter = 0;
     }
-
+    // LOGICA PARA CHECAR SE O JOGO DEVE ACABAR
     if (this.guessesRemaining === 0) {
-      alert("Voce usou todas as tentativas!");
-      alert(`A palavra certa era: "${rightGuessString}"`);
+      this.alertDOM(`A palavra certa era: "${this.rightGuessString}"`);
     }
   }
 
@@ -167,15 +203,11 @@ class Worldler {
     // APLICAR FUNCAO ANONIMA EM ELEMENTOS DA NODE LIST
     keys.forEach((key) => {
       // ACHAR LETRA DA NODE LIST QUE CORRESPONDE AO ARG
-      console.log("trigger-1");
       if (key.textContent.toLowerCase() === letter) {
-        console.log("trigger0");
         // GUARDAR COR ATUAL DA LETRA
         let memCol = key.style.backgroundColor;
         // CHECAR SE A COR JA E A COR MAIN
         if (memCol === `${this.#COLOR_MAIN}`) {
-          console.log("trigger1");
-
           return;
         }
         // CHECAR SE A LETRA JA E DA COR ALT E O ARG
@@ -185,15 +217,10 @@ class Worldler {
           memCol === `${this.#COLOR_ALT}` &&
           color !== `${this.#COLOR_MAIN}`
         ) {
-          console.log("trigger2");
           return;
         }
         // SE NENHUMA GUARD CLAUSE ENGATILHAR, APLICAR NOVA COR
         key.style.backgroundColor = color;
-
-        console.log(key);
-        console.log(key.style.backgroundColor);
-        console.log(color);
       }
     });
   }
@@ -246,9 +273,191 @@ class Worldler {
     });
   }
 
+  generateStaticEmbed() {
+    // FUNCAO ALTERNATIVA A STREETVIEW QUE GERA UMA FOTO BASEADA EM UMA
+    // SEARCH PELA PALAVRA SECRETA.
+    const imgDiv = document.querySelector(".map--container");
+    const img = document.createElement("img");
+    const location = this.rightGuessString;
+    const size = `${imgDiv.offsetWidth}x${imgDiv.offsetHeight}`;
+    img.src = `https://maps.googleapis.com/maps/api/streetview?location=${location}8&size=${size}&key=AIzaSyCEX0HMqKwrrLQxvZFIUiAD3VFF1ksM8NA`;
+    imgDiv.appendChild(img);
+  }
+
+  createAdaptiveMap() {
+    var geocoder = new google.maps.Geocoder();
+    var address = "2 Simei Street 3, Singapore, Singapore 529889";
+    //var address = "1 Hacienda Grove, Singapore 457908";
+    //var address = "105 Simei Street 1, Singapore 520105";
+
+    geocoder.geocode({ address: address }, function (results, status) {
+      if (status == google.maps.GeocoderStatus.OK) {
+        var latitude = results[0].geometry.location.lat();
+        var longitude = results[0].geometry.location.lng();
+
+        var svService = new google.maps.StreetViewService();
+        var panoRequest = {
+          location: results[0].geometry.location,
+          preference: google.maps.StreetViewPreference.NEAREST,
+          radius: 50,
+          source: google.maps.StreetViewSource.OUTDOOR,
+        };
+
+        var findPanorama = function (radius) {
+          panoRequest.radius = radius;
+          svService.getPanorama(panoRequest, function (panoData, status) {
+            if (status === google.maps.StreetViewStatus.OK) {
+              var panorama = new google.maps.StreetViewPanorama(
+                document.getElementById(".map--container"),
+                {
+                  pano: panoData.location.pano,
+                }
+              );
+            } else {
+              //Handle other statuses here
+              if (radius > 200) {
+                this.alertDOM("Street View is not available");
+              } else {
+                findPanorama(radius + 5);
+              }
+            }
+          });
+        };
+
+        findPanorama(50);
+      }
+    });
+  }
+
+  alertDOM(string) {
+    const h1 = document.getElementById("title");
+    const h1Content = h1.textContent;
+    h1.textContent = string;
+    setTimeout(() => {
+      h1.textContent = h1Content;
+    }, 5000);
+  }
+
+  createMap() {
+    // CALLBACK QUE SERA CHAMADA PELO SCRIPT DO GOOGLE MAPS NO HTML
+
+    // CRIAR REQUEST
+    const request = new XMLHttpRequest();
+    request.open(
+      "GET",
+      `https://maps.googleapis.com/maps/api/geocode/json?address=city+center+${this.rightGuessString}&key=AIzaSyCEX0HMqKwrrLQxvZFIUiAD3VFF1ksM8NA`
+    );
+    request.send();
+
+    // IMPLEMENTAR A CRIACAO DO MAPA DENTRO DO EVENTO "LOAD"
+    request.addEventListener("load", function () {
+      // PARSE DA JSON PARA SER USADA DENTRO DO OBJ OPTIONS
+      const [data] = JSON.parse(this.responseText).results;
+      let location = data.geometry.location;
+      // LOGICA DE DIVERSIFICACAO DO PANORAMA
+      location.lat +=
+        ((Math.random() * 5) / 1000) * (Math.random() < 0.5 ? -1 : 1);
+      location.lng +=
+        ((Math.random() * 5) / 1000) * (Math.random() < 0.5 ? -1 : 1);
+      // CRIAR OBJ DE OPCOES
+      let options = {
+        position: location,
+        preference: google.maps.StreetViewPreference.BEST,
+        radius: 5000,
+        source: google.maps.StreetViewSource.OUTDOOR,
+        disableDefaultUI: true,
+        streetViewControl: false,
+        linksControl: false,
+        panControl: false,
+        enableCloseButton: false,
+        showRoadLabels: false,
+      };
+      // CRIACAO DO PANORAMA DO STREET VIEW
+      let pano = new google.maps.StreetViewPanorama(
+        document.querySelector(".map--container"),
+        options
+      );
+
+      console.log(pano);
+    });
+  }
+
   //////////////// FIM DA CLASSE WORLDLER ////////////////
 }
+const arr = [
+  "tokyo",
+  "hanoi",
+  "paris",
+  "kyoto",
+  "sofia",
+  "lagos",
+  "milan",
+  "perth",
+  "seoul",
+  "miami",
+  "osaka",
+  "medan",
+  "delhi",
+  "dubai",
+  "hague",
+  "macau",
+  "minsk",
+  "cairo",
+  "tunis",
+  "dakar",
+  "accra",
+  "eeklo",
+  "kabul",
+  "texas",
+  "moscow",
+  "dhaka",
+  "cairo",
+  "beijing",
+  "mumbai",
+  "karachi",
+  "istanbul",
+  "kolkata",
+  "manila",
+  "tianjin",
+  "mexico",
+  "mumbai",
+  "lahore",
+  "chennai",
+  "bogota",
+  "jakarta",
+  "lima",
+  "bangkok",
+  "nagoya",
+  "london",
+  "tehran",
+  "luanda",
+  "santiago",
+  "toronto",
+  "ankara",
+  "nairobi",
+  "sydney",
+  "brasilia",
+  "rome",
+  "kano",
+  "salvador",
+  "curitiba",
+  "berlin",
+  "krakow",
+  "busan",
+  "asuncion",
+  "campinas",
+  "kuwait",
+  "athens",
+  "lisbon",
+  "caracas",
+  "algiers",
+  "chicago",
+  "brisbane",
+  "beirut"
+];
 
-const arr = ["arrays", "ferals", "brites", "broths"];
 const game = new Worldler(arr);
 game.init();
+game.alertDOM("Testing warning message")
+
+// TODO: array agnostico 5 ou 6 letras / usar best parametro para pegar melhores panoramas / REFRESCAR PAGINA QNDO NAO HOUVER PROPRIEDADE GEOMETRY
