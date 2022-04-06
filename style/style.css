@@ -10,7 +10,7 @@
 }
 header {
   display: flex;
-  flex: row;
+  flex: column;
   align-items: center;
   justify-content: center;
   margin-bottom: 25px;
@@ -128,12 +128,11 @@ body {
   transition-delay: 0.1s;
   padding: 0.5rem 2rem;
 }
-.footer--icon{
+.footer--icon {
   margin: 0;
   height: 40px;
 }
 .game--footer {
-  
   display: flex;
   flex-direction: row;
   align-items: flex-end;
@@ -147,7 +146,21 @@ body {
 .game--footer span {
   font-size: 28px;
 }
-
+header {
+  display: flex;
+  flex-direction: column;
+}
+#restart {
+  font-size: 32px;
+  text-decoration: underline;
+  /* text-decoration-line: var(--main); */
+  color: var(--main);
+  transition: 0.5s;
+}
+#restart:hover {
+  transition: 0.5s;
+  font-size: 36px;
+}
 
 /* @media screen and (max-width: 1200px) {
   .game {

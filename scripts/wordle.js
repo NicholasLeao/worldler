@@ -185,6 +185,7 @@ class Worldler {
     if (guessString === this.rightGuessString) {
       this.alertDOM("Resposta certa!");
       this.guessesRemaining = 0;
+      this.addRestartButton();
       return;
     } else {
       this.guessesRemaining -= 1;
@@ -194,7 +195,19 @@ class Worldler {
     // LOGICA PARA CHECAR SE O JOGO DEVE ACABAR
     if (this.guessesRemaining === 0) {
       this.alertDOM(`A palavra certa era: "${this.rightGuessString}"`);
+      this.addRestartButton();
     }
+  }
+
+  addRestartButton() {
+    const h1 = document.getElementById("title");
+    h1.insertAdjacentHTML(
+      "afterend",
+      `<a href="#"><h2 id="restart">clique aqui para reiniciar!<h2></a>`
+    );
+    document.getElementById("restart").addEventListener("click", () => {
+      document.location.reload(true);
+    });
   }
 
   shadeKeyboard(letter, color) {
@@ -373,7 +386,7 @@ class Worldler {
         showRoadLabels: false,
       };
       // CRIACAO DO PANORAMA DO STREET VIEW
-      let pano = new google.maps.StreetViewPanorama(
+      new google.maps.StreetViewPanorama(
         document.querySelector(".map--container"),
         options
       );
@@ -452,6 +465,14 @@ const arr = [
   "chicago",
   "brisbane",
   "beirut",
+  "fortaleza",
+  "brasilia",
+  "salvador",
+  "manaus",
+  "recife",
+  "goiania",
+  "belem",
+  "guarulhos",
 ];
 
 const game = new Worldler(arr);
