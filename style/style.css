@@ -4,6 +4,7 @@
   --main: #5a45da;
 }
 * {
+  font-size: 16px;
   margin: 0;
   font-family: Jetbrains Mono;
 }
@@ -132,6 +133,7 @@ body {
   height: 40px;
 }
 .game--footer {
+  
   display: flex;
   flex-direction: row;
   align-items: flex-end;
@@ -142,6 +144,10 @@ body {
   font-size: 26px;
   margin-top: 10px;
 }
+.game--footer span {
+  font-size: 28px;
+}
+
 
 /* @media screen and (max-width: 1200px) {
   .game {
