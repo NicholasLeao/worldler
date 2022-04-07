@@ -1,5 +1,5 @@
 "use strict";
-// import { CIDADES } from "./cities";
+import { CIDADES } from "./cities.js";
 
 class Worldler {
   // VARIAVEIS DE CUSTOMIZACAO DO JOGO INCLUINDO CORES,
@@ -28,6 +28,7 @@ class Worldler {
     this.nextLetter = 0;
   }
 
+  // ============== FUNCOES PARA O JOGO ==============
   restartGame() {
     // REDEFINIR VARIAVEIS
     this.rightGuessString =
@@ -41,6 +42,7 @@ class Worldler {
     this.nextLetter = 0;
     // REMOVER HTML
     document.querySelector(".game--container").innerHTML = "";
+    document.querySelector(".map--container").innerHTML = "";
     // REINVOCAR FUNCOES
     this.createMap();
     this.initBoard();
@@ -50,7 +52,7 @@ class Worldler {
   init() {
     // CRIAR TABULEIRO E TECLADO DO JOGO E EM SEGUIDA
     //  DEFINIR SEUS EVENT LISTENERS RESPECTIVOS.
-    // this.createMap();
+    this.createMap();
     this.initBoard();
     this.initVirtualKeyboard();
     this.initKeyboardEvents();
@@ -66,56 +68,6 @@ class Worldler {
       this.wordArray.filter((e) => e.length === this.#WORD_SIZE).length;
     if (!bool) {
       this.alertDOM("Invalid word array!");
-    }
-  }
-
-  initBoard() {
-    // GET CONTAINER DO JOGO
-    let container = document.querySelector(".game--container");
-
-    // CRIAR UMA LINHA PARA CADA CHANCE
-    for (let i = 0; i < this.#MAX_GUESS; i++) {
-      let row = document.createElement("div");
-      row.classList.add("letter--row");
-
-      // CRIAR UMA CAIXA PARA CADA LETRA DE CADA CHANCE
-      for (let j = 0; j < this.#WORD_SIZE; j++) {
-        row.insertAdjacentHTML("afterbegin", `<div class="box"></div>`);
-      }
-
-      // INSERIR LINHA NO CONTAINER
-      container.insertAdjacentElement("afterbegin", row);
-    }
-  }
-
-  initVirtualKeyboard() {
-    // CRIAR LAYOUT DE FORMA PROGRAMATICA,
-    //  PARA SER ADAPTADO PARA OUTROS FORMATOS, EM QUAL CASO
-    //  SERIA PRECISO MUDAR O RegEx EM initKeyboardEvents()
-    const layout = [
-      ["Q", "W", "E", "R", "T", "Y", "U", "I", "O", "P"],
-      ["A", "S", "D", "F", "G", "H", "J", "K", "L"],
-      ["ENTER", "Z", "X", "C", "V", "B", "N", "M", "DEL"],
-    ];
-
-    // GET CONTAINER DO TECLADO
-    let container = document.querySelector(".kbd--container");
-
-    // CRIAR UMA LINHA PARA CADA LINHA DO LAYOUT
-    for (let i = 0; i < layout.length; i++) {
-      let row = document.createElement("div");
-      row.classList.add(`kbd--row${i + 1}`);
-
-      // CRIAR UMA CAIXA PARA CADA TECLA
-      for (let key of layout[i]) {
-        row.insertAdjacentHTML(
-          "beforeend",
-          `<button class="kbd--btn">${key}</button>`
-        );
-      }
-
-      // INSERIR LINHA NO CONTAINER
-      container.insertAdjacentElement("beforeend", row);
     }
   }
 
@@ -219,29 +171,74 @@ class Worldler {
       this.alertDOM(`A palavra certa era: "${this.rightGuessString}"`);
     }
   }
+  // ============== FUNCOES PARA UI ==============
+  initBoard() {
+    // GET CONTAINER DO JOGO
+    let container = document.querySelector(".game--container");
 
+    // CRIAR UMA LINHA PARA CADA CHANCE
+    for (let i = 0; i < this.#MAX_GUESS; i++) {
+      let row = document.createElement("div");
+      row.classList.add("letter--row");
+
+      // CRIAR UMA CAIXA PARA CADA LETRA DE CADA CHANCE
+      for (let j = 0; j < this.#WORD_SIZE; j++) {
+        row.insertAdjacentHTML("afterbegin", `<div class="box"></div>`);
+      }
+
+      // INSERIR LINHA NO CONTAINER
+      container.insertAdjacentElement("afterbegin", row);
+    }
+  }
+
+  initVirtualKeyboard() {
+    // CRIAR LAYOUT DE FORMA PROGRAMATICA,
+    //  PARA SER ADAPTADO PARA OUTROS FORMATOS, EM QUAL CASO
+    //  SERIA PRECISO MUDAR O RegEx EM initKeyboardEvents()
+    const layout = [
+      ["Q", "W", "E", "R", "T", "Y", "U", "I", "O", "P"],
+      ["A", "S", "D", "F", "G", "H", "J", "K", "L"],
+      ["ENTER", "Z", "X", "C", "V", "B", "N", "M", "DEL"],
+    ];
+
+    // GET CONTAINER DO TECLADO
+    let container = document.querySelector(".kbd--container");
+
+    // CRIAR UMA LINHA PARA CADA LINHA DO LAYOUT
+    for (let i = 0; i < layout.length; i++) {
+      let row = document.createElement("div");
+      row.classList.add(`kbd--row${i + 1}`);
+
+      // CRIAR UMA CAIXA PARA CADA TECLA
+      for (let key of layout[i]) {
+        row.insertAdjacentHTML(
+          "beforeend",
+          `<button class="kbd--btn">${key}</button>`
+        );
+      }
+
+      // INSERIR LINHA NO CONTAINER
+      container.insertAdjacentElement("beforeend", row);
+    }
+  }
   shadeKeyboard(letter, color) {
     // PEGAR NODE LIST COM TODAS AS LETRAS
     let keys = document.querySelectorAll(".kbd--btn");
     // APLICAR FUNCAO ANONIMA EM ELEMENTOS DA NODE LIST
-    keys.forEach((key) => {  
+    keys.forEach((key) => {
       // ACHAR LETRA DA NODE LIST QUE CORRESPONDE AO ARG
       if (key.textContent.toLowerCase() === letter) {
         // GUARDAR COR ATUAL DA LETRA
         let memCol = this.hexParser(key.style.backgroundColor);
         // CHECAR SE A COR JA E A COR MAIN
-        if (memCol === `${this.#COLOR_MAIN}`) {
-          console.log("TRIG2 ");
-          return;
-        }
+        if (memCol === `${this.#COLOR_MAIN}`) return;
+
         // CHECAR SE A LETRA JA E DA COR ALT E O ARG
         //  NAO E DA COR MAIN, SIGNIFICANDO QUE NAO
         //  SERA NECESSARIO TROCAR
-        if (memCol === `${this.#COLOR_ALT}` && color !== `${this.#COLOR_MAIN}`) {
-          console.log("trig1");
+        if (memCol === `${this.#COLOR_ALT}` && color !== `${this.#COLOR_MAIN}`)
           return;
-        }
-        console.log(color, memCol,`${this.#COLOR_MAIN}`,`${this.#COLOR_ALT}` )
+
         // SE NENHUMA GUARD CLAUSE ENGATILHAR, APLICAR NOVA COR
         key.style.backgroundColor = color;
       }
@@ -334,6 +331,22 @@ class Worldler {
     });
   }
 
+  alertDOM(string) {
+    // Capturar anterior
+    const h1 = document.getElementById("title");
+    const size = h1.style.fontSize;
+    const h1Content = h1.textContent;
+    // Atualizar
+    h1.style.fontSize = "52px";
+    h1.textContent = string;
+    // Reatribuir valor
+    setTimeout(() => {
+      h1.style.fontSize = size;
+      h1.textContent = h1Content;
+    }, 5000);
+  }
+  
+  // ============== FUNCOES PARA GERAR MAPAS ==============
   generateStaticEmbed() {
     // FUNCAO ALTERNATIVA A STREETVIEW QUE GERA UMA FOTO BASEADA EM UMA
     // SEARCH PELA PALAVRA SECRETA.
@@ -390,21 +403,6 @@ class Worldler {
     });
   }
 
-  alertDOM(string) {
-    // Capturar anterior
-    const h1 = document.getElementById("title");
-    const size = h1.style.fontSize;
-    const h1Content = h1.textContent;
-    // Atualizar
-    h1.style.fontSize = "52px";
-    h1.textContent = string;
-    // Reatribuir valor
-    setTimeout(() => {
-      h1.style.fontSize = size;
-      h1.textContent = h1Content;
-    }, 5000);
-  }
-
   createMap() {
     // CALLBACK QUE SERA CHAMADA PELO SCRIPT DO GOOGLE MAPS NO HTML
 
@@ -420,6 +418,9 @@ class Worldler {
     request.addEventListener("load", function () {
       // PARSE DA JSON PARA SER USADA DENTRO DO OBJ OPTIONS
       const [data] = JSON.parse(this.responseText).results;
+      if (data === undefined) {
+        return;
+      }
       let location = data.geometry.location;
       // LOGICA DE DIVERSIFICACAO DO PANORAMA
       location.lat +=
@@ -447,144 +448,10 @@ class Worldler {
     });
   }
 
+
+
   //////////////// FIM DA CLASSE WORLDLER ////////////////
 }
-const arr = [
-  "tokyo",
-  "hanoi",
-  "paris",
-  "kyoto",
-  "sofia",
-  "lagos",
-  "milan",
-  "perth",
-  "seoul",
-  "miami",
-  "osaka",
-  "medan",
-  "delhi",
-  "dubai",
-  "hague",
-  "macau",
-  "minsk",
-  "cairo",
-  "tunis",
-  "dakar",
-  "accra",
-  "eeklo",
-  "kabul",
-  "texas",
-  "moscow",
-  "dhaka",
-  "cairo",
-  "beijing",
-  "mumbai",
-  "karachi",
-  "istanbul",
-  "kolkata",
-  "manila",
-  "tianjin",
-  "mexico",
-  "mumbai",
-  "lahore",
-  "chennai",
-  "bogota",
-  "jakarta",
-  "lima",
-  "bangkok",
-  "nagoya",
-  "london",
-  "tehran",
-  "luanda",
-  "santiago",
-  "toronto",
-  "ankara",
-  "nairobi",
-  "sydney",
-  "brasilia",
-  "rome",
-  "kano",
-  "salvador",
-  "curitiba",
-  "berlin",
-  "krakow",
-  "busan",
-  "asuncion",
-  "campinas",
-  "kuwait",
-  "athens",
-  "lisbon",
-  "caracas",
-  "algiers",
-  "chicago",
-  "brisbane",
-  "beirut",
-  "fortaleza",
-  "brasilia",
-  "salvador",
-  "manaus",
-  "recife",
-  "goiania",
-  "belem",
-  "guarulhos",
-];
-const arr_BR = [
-  "brasilia",
-  "salvador",
-  "fortaleza",
-  "manaus",
-  "curitiba",
-  "recife",
-  "belem",
-  "guarulhos",
-  "campinas",
-  "maceio",
-  "natal",
-  "teresina",
-  "osasco",
-  "uberlandia",
-  "sorocaba",
-  "contagem",
-  "aracaju",
-  "cuiaba",
-  "joinville",
-  "londrina",
-  "ananindeua",
-  "serra",
-  "niteroi",
-  "macapa",
-  "maua",
-  "betim",
-  "santos",
-  "maringa",
-  "diadema",
-  "jundiai",
-  "piracicaba",
-  "olinda",
-  "anapolis",
-  "bauru",
-  "vitoria",
-  "caruaru",
-  "blumenau",
-  "petrolina",
-  "canoas",
-  "pelotas",
-  "uberaba",
-  "paulista",
-  "cascavel",
-  "guaruja",
-  "taubate",
-  "limeira",
-  "petropolis",
-  "santarem",
-  "palmas",
-  "mossoro",
-  "suzano",
-  "sumare",
-  "barueri",
-];
 
-const game = new Worldler(arr_BR);
+const game = new Worldler(CIDADES);
 game.init();
-
-// TODO: array agnostico 5 ou 6 letras / usar best parametro para pegar melhores panoramas / REFRESCAR PAGINA QNDO NAO HOUVER PROPRIEDADE GEOMETRY
