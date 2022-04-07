@@ -10,6 +10,7 @@ class Worldler {
   #COLOR_MAIN = "#5A45DA";
   #COLOR_ALT = "#e38944";
   #COLOR_NEUTRAL = "#4A4A4A";
+  #COLOR_BLACK = "#121212"
 
   constructor(array) {
     // VARIAVEIS PARA DEFINIR A PALAVRA A SER ENCONTRADA
@@ -38,10 +39,12 @@ class Worldler {
     this.guessesRemaining = this.#MAX_GUESS;
     this.currentGuess = [];
     this.nextLetter = 0;
+    // REMOVER HTML
+    document.querySelector(".game--container").innerHTML = "";
     // REINVOCAR FUNCOES
     this.createMap();
-    document.querySelector(".game--container").innerHTML = "";
     this.initBoard();
+    this.unshadeKeyboard();
   }
 
   init() {
@@ -52,7 +55,7 @@ class Worldler {
     this.initVirtualKeyboard();
     this.initKeyboardEvents();
     this.initVirtualKeyboardEvents();
-    this.initModalEventListeners();
+    this.initUIEventListeners();
   }
 
   checkWordsArray() {
@@ -205,7 +208,6 @@ class Worldler {
     if (guessString === this.rightGuessString) {
       this.alertDOM("Resposta certa!");
       this.guessesRemaining = 0;
-      this.addRestartButton();
       return;
     } else {
       this.guessesRemaining -= 1;
@@ -215,20 +217,19 @@ class Worldler {
     // LOGICA PARA CHECAR SE O JOGO DEVE ACABAR
     if (this.guessesRemaining === 0) {
       this.alertDOM(`A palavra certa era: "${this.rightGuessString}"`);
-      this.addRestartButton();
     }
   }
 
-  addRestartButton() {
-    const h1 = document.getElementById("title");
-    h1.insertAdjacentHTML(
-      "afterend",
-      `<a href="#"><h2 id="restart">clique aqui para reiniciar!<h2></a>`
-    );
-    document.getElementById("restart").addEventListener("click", () => {
-      document.location.reload(true);
-    });
-  }
+  // addRestartButton() {
+  //   const h1 = document.getElementById("title");
+  //   h1.insertAdjacentHTML(
+  //     "afterend",
+  //     `<a href="#"><h2 id="restart">clique aqui para reiniciar!<h2></a>`
+  //   );
+  //   document.getElementById("restart").addEventListener("click", () => {
+  //     document.location.reload(true);
+  //   });
+  // }
 
   shadeKeyboard(letter, color) {
     // PEGAR NODE LIST COM TODAS AS LETRAS
@@ -255,6 +256,13 @@ class Worldler {
         // SE NENHUMA GUARD CLAUSE ENGATILHAR, APLICAR NOVA COR
         key.style.backgroundColor = color;
       }
+    });
+  }
+
+  unshadeKeyboard() {
+    let keys = document.querySelectorAll(".kbd--btn");
+    keys.forEach(key => {
+      key.style.backgroundColor = this.#COLOR_BLACK;
     });
   }
 
@@ -308,7 +316,8 @@ class Worldler {
   toggleModal() {
     document.getElementById("modal").classList.toggle("hidden");
   }
-  initModalEventListeners() {
+  initUIEventListeners() {
+    // EVENT LISTENERS PARA O MODAL
     const modal = document.getElementById("modal");
     document.getElementById("rules").addEventListener("click", () => {
       this.toggleModal();
@@ -319,6 +328,10 @@ class Worldler {
     document.addEventListener("keydown", (e) => {
       if (e.key === "Escape" && !modal.classList.contains("hidden"))
         this.toggleModal();
+    });
+    // EVENT LISTENERS PARA REINICIAR
+    document.getElementById("cycle").addEventListener("click", () => {
+      this.restartGame();
     });
   }
 
