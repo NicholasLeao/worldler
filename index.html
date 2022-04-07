@@ -19,7 +19,20 @@
   </head>
   <body>
     <div class="body--container">
-      <header><h1 id="title">Worldler</h1></header>
+      <!-- HEADER -->
+      <header><div class="header--text"><h1 id="title">WORLDLER</h1></div><span class="header--btn" id="cycle"><img src="./assets/refresh.svg"></span><span class="header--btn"  id="rules">?</span></header>
+      <!-- MODAL -->
+      <div id="modal" class="hidden">
+        <div class="modal--header"><h2>Regras</h2><span id="close--modal">X</span></div>
+        <br>
+          <li>Com base na imagem, descubra o nome da cidade.</li>
+          <li>Seu número de chances é representado pela quantidade de fileiras.</li>
+          <li>Letras <span style="color: var(--main); font-size: 23px;">roxas</span> estão no lugar certo.</li>
+          <li>Letras <span style="color: var(--alt); font-size: 23px;">laranjas</span> estão na palavra mas não neste lugar.</li>
+          <li>Ao chegar no final clique em reiniciar ( <img width="17px" src="./assets/refresh.svg"> ) para jogar de novo.</li>
+        </ol>
+      </div>
+      <!-- JOGO -->
       <section class="game">
         <div class="map--container"></div>
         <div class="wordle--container">
@@ -27,6 +40,7 @@
           <div class="kbd--container"></div>
         </div>
       </section>
+      <!-- FOOTER -->
       <div class="game--footer">
         <span>Um jogo escrito em JavaScript por Nicholas Leão</span>
         <div>
@@ -38,10 +52,10 @@
           /></a>
         </div>
       </div>
+      <!--  -->
     </div>
-    <!--  -->
-    <!--  -->
-    <script src="./scripts/wordle.js"></script>
+    <!-- SCRIPTS -->
+    <script src="./scripts/wordle.js" type="module"></script>
     <script
       src="https://maps.googleapis.com/maps/api/js?key=AIzaSyA4gU2QESrbeNaGTFFtrD2wJXtfOTpI6rE"
       async
