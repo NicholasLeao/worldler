@@ -15,7 +15,9 @@ class Worldler {
     // VARIAVEIS PARA DEFINIR A PALAVRA A SER ENCONTRADA
     this.wordArray = array;
     this.rightGuessString =
-      this.wordArray[Math.floor(Math.random() * array.length)].toLowerCase();
+      this.wordArray[
+        Math.floor(Math.random() * this.wordArray.length)
+      ].toLowerCase();
     // DEFINIR DIFICULDADE PARA ARRAY AGNOSTICO AO NUMERO DE LETRAS
     this.#WORD_SIZE = this.rightGuessString.length;
     this.#MAX_GUESS = this.#WORD_SIZE - 2 > 4 ? 4 : this.#WORD_SIZE - 2;
@@ -23,6 +25,23 @@ class Worldler {
     this.guessesRemaining = this.#MAX_GUESS;
     this.currentGuess = [];
     this.nextLetter = 0;
+  }
+
+  restartGame() {
+    // REDEFINIR VARIAVEIS
+    this.rightGuessString =
+      this.wordArray[
+        Math.floor(Math.random() * this.wordArray.length)
+      ].toLowerCase();
+    this.#WORD_SIZE = this.rightGuessString.length;
+    this.#MAX_GUESS = this.#WORD_SIZE - 2 > 4 ? 4 : this.#WORD_SIZE - 2;
+    this.guessesRemaining = this.#MAX_GUESS;
+    this.currentGuess = [];
+    this.nextLetter = 0;
+    // REINVOCAR FUNCOES
+    this.createMap();
+    document.querySelector(".game--container").innerHTML = "";
+    this.initBoard();
   }
 
   init() {
@@ -33,6 +52,7 @@ class Worldler {
     this.initVirtualKeyboard();
     this.initKeyboardEvents();
     this.initVirtualKeyboardEvents();
+    this.initModalEventListeners();
   }
 
   checkWordsArray() {
@@ -283,6 +303,22 @@ class Worldler {
       // EMULAR UM KEYBOARD EVENT PARA SER PROCESSADO
       //  PELO EVENT HANDLER DE TECLADOS.
       document.dispatchEvent(new KeyboardEvent("keyup", { key: key }));
+    });
+  }
+  toggleModal() {
+    document.getElementById("modal").classList.toggle("hidden");
+  }
+  initModalEventListeners() {
+    const modal = document.getElementById("modal");
+    document.getElementById("rules").addEventListener("click", () => {
+      this.toggleModal();
+    });
+    document.getElementById("close--modal").addEventListener("click", () => {
+      this.toggleModal();
+    });
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "Escape" && !modal.classList.contains("hidden"))
+        this.toggleModal();
     });
   }
 

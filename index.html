@@ -19,7 +19,18 @@
   </head>
   <body>
     <div class="body--container">
-      <header><h1 id="title">Worldler</h1></header>
+      <header><div class="header--text"><h1 id="title">WORLDLER</h1></div><span id="rules">?</span></header>
+      <div id="modal" class="hidden">
+        <div class="modal--header"><h2>Regras</h2><span id="close--modal">X</span></div>
+        
+        <br>
+          <li>Com base na imagem, descubra o nome da cidade.</li>
+          <li>Seu número de chances é representado pela quantidade de fileiras.</li>
+          <li>Letras <span style="color: var(--main); font-size: 23px;">roxas</span> estão no lugar certo.</li>
+          <li>Letras <span style="color: var(--alt); font-size: 23px;">laranjas</span> estão na palavra mas não neste lugar.</li>
+          <li>Ao chegar no final clique em reiniciar para jogar de novo.</li>
+        </ol>
+      </div>
       <section class="game">
         <div class="map--container"></div>
         <div class="wordle--container">
