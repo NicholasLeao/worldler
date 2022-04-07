@@ -10,7 +10,7 @@ class Worldler {
   #COLOR_MAIN = "#5A45DA";
   #COLOR_ALT = "#e38944";
   #COLOR_NEUTRAL = "#4A4A4A";
-  #COLOR_BLACK = "#121212"
+  #COLOR_BLACK = "#121212";
 
   constructor(array) {
     // VARIAVEIS PARA DEFINIR A PALAVRA A SER ENCONTRADA
@@ -50,7 +50,7 @@ class Worldler {
   init() {
     // CRIAR TABULEIRO E TECLADO DO JOGO E EM SEGUIDA
     //  DEFINIR SEUS EVENT LISTENERS RESPECTIVOS.
-    this.createMap();
+    // this.createMap();
     this.initBoard();
     this.initVirtualKeyboard();
     this.initKeyboardEvents();
@@ -220,48 +220,45 @@ class Worldler {
     }
   }
 
-  // addRestartButton() {
-  //   const h1 = document.getElementById("title");
-  //   h1.insertAdjacentHTML(
-  //     "afterend",
-  //     `<a href="#"><h2 id="restart">clique aqui para reiniciar!<h2></a>`
-  //   );
-  //   document.getElementById("restart").addEventListener("click", () => {
-  //     document.location.reload(true);
-  //   });
-  // }
-
   shadeKeyboard(letter, color) {
     // PEGAR NODE LIST COM TODAS AS LETRAS
     let keys = document.querySelectorAll(".kbd--btn");
     // APLICAR FUNCAO ANONIMA EM ELEMENTOS DA NODE LIST
-    keys.forEach((key) => {
+    keys.forEach((key) => {  
       // ACHAR LETRA DA NODE LIST QUE CORRESPONDE AO ARG
       if (key.textContent.toLowerCase() === letter) {
         // GUARDAR COR ATUAL DA LETRA
-        let memCol = key.style.backgroundColor;
+        let memCol = this.hexParser(key.style.backgroundColor);
         // CHECAR SE A COR JA E A COR MAIN
         if (memCol === `${this.#COLOR_MAIN}`) {
+          console.log("TRIG2 ");
           return;
         }
         // CHECAR SE A LETRA JA E DA COR ALT E O ARG
         //  NAO E DA COR MAIN, SIGNIFICANDO QUE NAO
         //  SERA NECESSARIO TROCAR
-        if (
-          memCol === `${this.#COLOR_ALT}` &&
-          color !== `${this.#COLOR_MAIN}`
-        ) {
+        if (memCol === `${this.#COLOR_ALT}` && color !== `${this.#COLOR_MAIN}`) {
+          console.log("trig1");
           return;
         }
+        console.log(color, memCol,`${this.#COLOR_MAIN}`,`${this.#COLOR_ALT}` )
         // SE NENHUMA GUARD CLAUSE ENGATILHAR, APLICAR NOVA COR
         key.style.backgroundColor = color;
       }
     });
   }
 
+  hexParser(str) {
+    // FUNCAO PARA PEGAR VALOR HEX DE UM COMPONENTE RGB
+    //  PARA RESOLVER UM BUG DA FUNCAO shadeKeyboard
+    let ctx = document.createElement("canvas").getContext("2d");
+    ctx.strokeStyle = str;
+    return ctx.strokeStyle.toUpperCase().replace("E", "e");
+  }
+
   unshadeKeyboard() {
     let keys = document.querySelectorAll(".kbd--btn");
-    keys.forEach(key => {
+    keys.forEach((key) => {
       key.style.backgroundColor = this.#COLOR_BLACK;
     });
   }
@@ -313,9 +310,11 @@ class Worldler {
       document.dispatchEvent(new KeyboardEvent("keyup", { key: key }));
     });
   }
+
   toggleModal() {
     document.getElementById("modal").classList.toggle("hidden");
   }
+
   initUIEventListeners() {
     // EVENT LISTENERS PARA O MODAL
     const modal = document.getElementById("modal");
@@ -392,10 +391,16 @@ class Worldler {
   }
 
   alertDOM(string) {
+    // Capturar anterior
     const h1 = document.getElementById("title");
+    const size = h1.style.fontSize;
     const h1Content = h1.textContent;
+    // Atualizar
+    h1.style.fontSize = "52px";
     h1.textContent = string;
+    // Reatribuir valor
     setTimeout(() => {
+      h1.style.fontSize = size;
       h1.textContent = h1Content;
     }, 5000);
   }
@@ -523,8 +528,63 @@ const arr = [
   "belem",
   "guarulhos",
 ];
+const arr_BR = [
+  "brasilia",
+  "salvador",
+  "fortaleza",
+  "manaus",
+  "curitiba",
+  "recife",
+  "belem",
+  "guarulhos",
+  "campinas",
+  "maceio",
+  "natal",
+  "teresina",
+  "osasco",
+  "uberlandia",
+  "sorocaba",
+  "contagem",
+  "aracaju",
+  "cuiaba",
+  "joinville",
+  "londrina",
+  "ananindeua",
+  "serra",
+  "niteroi",
+  "macapa",
+  "maua",
+  "betim",
+  "santos",
+  "maringa",
+  "diadema",
+  "jundiai",
+  "piracicaba",
+  "olinda",
+  "anapolis",
+  "bauru",
+  "vitoria",
+  "caruaru",
+  "blumenau",
+  "petrolina",
+  "canoas",
+  "pelotas",
+  "uberaba",
+  "paulista",
+  "cascavel",
+  "guaruja",
+  "taubate",
+  "limeira",
+  "petropolis",
+  "santarem",
+  "palmas",
+  "mossoro",
+  "suzano",
+  "sumare",
+  "barueri",
+];
 
-const game = new Worldler(arr);
+const game = new Worldler(arr_BR);
 game.init();
 
 // TODO: array agnostico 5 ou 6 letras / usar best parametro para pegar melhores panoramas / REFRESCAR PAGINA QNDO NAO HOUVER PROPRIEDADE GEOMETRY
